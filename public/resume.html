@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resume vs Code — DevAudit</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+      .upload-zone {
+        border: 2px dashed var(--border);
+        border-radius: var(--radius);
+        padding: 2.5rem 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.2s, background 0.2s;
+        background: rgba(0,200,255,0.03);
+        position: relative;
+      }
+      .upload-zone:hover, .upload-zone.drag-over {
+        border-color: var(--accent);
+        background: rgba(0,200,255,0.07);
+      }
+      .upload-zone input[type="file"] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+      .upload-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+      .upload-label { font-size: 1rem; color: var(--text); font-weight: 600; }
+      .upload-sub { font-size: 0.85rem; color: var(--muted); margin-top: 0.3rem; }
+      .pdf-preview {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1rem 1.25rem;
+        font-size: 0.85rem;
+        color: var(--muted);
+        font-family: var(--font-mono);
+        max-height: 160px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        display: none;
+      }
+      .pdf-ready {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: rgba(0,220,100,0.08);
+        border: 1px solid rgba(0,220,100,0.25);
+        border-radius: var(--radius);
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+        color: var(--success);
+        display: none;
+      }
+      /* Results */
+      .honesty-block {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+      }
+      .big-score {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.5rem 2rem;
+        text-align: center;
+        flex: 1;
+        min-width: 160px;
+      }
+      .big-score h3 { margin: 0 0 0.4rem; font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+      .big-score .num { font-size: 3rem; font-family: var(--font-mono); font-weight: 700; line-height: 1; }
+      .big-score .num.high { color: var(--success); }
+      .big-score .num.mid  { color: var(--warning); }
+      .big-score .num.low  { color: var(--danger); }
+      .big-score .sub { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; }
+
+      .skill-grid { display: flex; flex-direction: column; gap: 0.6rem; }
+      .skill-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+      }
+      .skill-row .icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 0.05rem; }
+      .skill-row .body { flex: 1; }
+      .skill-name { font-weight: 700; color: var(--text); }
+      .skill-detail { color: var(--muted); font-size: 0.82rem; margin-top: 0.2rem; }
+      .skill-fix {
+        display: inline-block;
+        margin-top: 0.35rem;
+        font-size: 0.78rem;
+        background: rgba(255,90,60,0.12);
+        color: var(--danger);
+        border-radius: 4px;
+        padding: 0.2rem 0.5rem;
+      }
+      .job-gap-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.7rem 1rem;
+        font-size: 0.88rem;
+      }
+      .gap-status {
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 0.2rem 0.55rem;
+        border-radius: 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        flex-shrink: 0;
+      }
+      .gap-status.met     { background: rgba(0,220,100,0.15); color: var(--success); }
+      .gap-status.partial { background: rgba(255,180,0,0.15); color: var(--warning); }
+      .gap-status.missing { background: rgba(255,90,60,0.15); color: var(--danger); }
+      .rec-box {
+        background: linear-gradient(135deg, rgba(0,200,255,0.08), rgba(0,200,255,0.03));
+        border: 1px solid rgba(0,200,255,0.3);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.5rem;
+        font-size: 0.95rem;
+      }
+      .rec-box strong { color: var(--accent); }
+      .section-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 0.75rem;
+      }
+      .no-jd-note {
+        font-size: 0.82rem;
+        color: var(--muted);
+        font-style: italic;
+        padding: 0.75rem;
+        text-align: center;
+      }
+      .analyzing-msg {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--muted);
+        display: none;
+      }
+      .analyzing-msg .spinner {
+        width: 40px; height: 40px;
+        border: 3px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 0 auto 1rem;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .err-box {
+        background: rgba(255,90,60,0.1);
+        border: 1px solid rgba(255,90,60,0.3);
+        border-radius: var(--radius);
+        padding: 0.9rem 1.1rem;
+        color: var(--danger);
+        font-size: 0.9rem;
+        display: none;
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text);
+        font-size: 1rem;
+        font-family: var(--font-head);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      input[type="text"]:focus { border-color: var(--accent); }
+      .field-label { font-size: 0.85rem; font-weight: 600; color: var(--muted); margin-bottom: 0.5rem; display: block; }
+      .field { margin-bottom: 1.25rem; }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="logo" href="/">Dev<span>Audit</span></a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="/">← Home</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <nav class="breadcrumb" aria-label="Progress">
+        <a href="/">Home</a><span class="sep">→</span>
+        <span class="here">Resume vs Code</span>
+      </nav>
+
+      <section class="hero" style="margin-bottom:2rem">
+        <h1 style="font-size:clamp(1.6rem,4vw,2.4rem)">Resume vs Code Gap Analyzer</h1>
+        <p class="sub">Upload your resume + enter your GitHub. We'll compare what you <em>claim</em> against what your code actually <em>proves</em>.</p>
+      </section>
+
+      <!-- FORM -->
+      <div id="form-section">
+        <div class="card" style="margin-bottom:1.5rem">
+          <!-- PDF Upload -->
+          <div class="field">
+            <span class="field-label">1. Upload your Resume (PDF)</span>
+            <div class="upload-zone" id="upload-zone">
+              <input type="file" id="pdf-input" accept=".pdf" />
+              <div class="upload-icon">📄</div>
+              <div class="upload-label">Click or drag & drop your resume PDF</div>
+              <div class="upload-sub">File stays in your browser — never uploaded to our servers</div>
+            </div>
+            <div class="pdf-ready" id="pdf-ready">
+              <span>✅</span>
+              <span id="pdf-filename">resume.pdf</span>
+              <span style="margin-left:auto; color:var(--muted); font-size:0.8rem" id="pdf-pages"></span>
+            </div>
+          </div>
+
+          <!-- GitHub -->
+          <div class="field">
+            <label class="field-label" for="github-input">2. Your GitHub Username</label>
+            <input type="text" id="github-input" placeholder="e.g.  octocat  or  https://github.com/octocat" autocomplete="off" spellcheck="false" />
+          </div>
+
+          <!-- Job Description -->
+          <div class="field" style="margin-bottom:0">
+            <label class="field-label" for="jd-input">3. Job Description <span style="font-weight:400;color:var(--muted)">(optional — paste to get a fit score)</span></label>
+            <textarea id="jd-input" rows="5" placeholder="Paste the job description here…&#10;&#10;e.g. We are looking for a React developer with 3+ years of experience, TypeScript, Node.js, REST APIs, Docker…"></textarea>
+          </div>
+        </div>
+
+        <div class="err-box" id="err-box"></div>
+
+        <button class="btn btn-primary" id="analyze-btn" style="width:100%; font-size:1.05rem; padding:0.9rem" disabled>
+          Analyze My Resume
+        </button>
+        <p style="text-align:center; font-size:0.8rem; color:var(--muted); margin-top:0.75rem">
+          Takes ~10–20 seconds · Requires GitHub to be public
+        </p>
+      </div>
+
+      <!-- ANALYZING -->
+      <div class="analyzing-msg" id="analyzing-msg">
+        <div class="spinner"></div>
+        <p id="analyzing-step">Reading your resume…</p>
+      </div>
+
+      <!-- RESULTS -->
+      <div id="results-section" class="hidden">
+
+        <!-- Scores -->
+        <div class="honesty-block" id="score-block"></div>
+
+        <!-- Summary -->
+        <div class="rec-box" id="summary-box" style="margin-bottom:2rem"></div>
+
+        <!-- Top Recommendation -->
+        <div style="margin-bottom:2.5rem">
+          <div class="section-label">⚡ Top Recommendation</div>
+          <div class="rec-box" id="rec-box"></div>
+        </div>
+
+        <!-- Verified Skills -->
+        <div style="margin-bottom:2.5rem" id="verified-section">
+          <div class="section-label">✅ Verified Skills — GitHub evidence found</div>
+          <div class="skill-grid" id="verified-list"></div>
+        </div>
+
+        <!-- Exaggerated / Unverified -->
+        <div style="margin-bottom:2.5rem" id="exag-section">
+          <div class="section-label">❌ Unverified Claims — No GitHub evidence</div>
+          <div class="skill-grid" id="exag-list"></div>
+        </div>
+
+        <!-- Missing Skills -->
+        <div style="margin-bottom:2.5rem" id="missing-section">
+          <div class="section-label">💡 Skills Worth Adding to GitHub</div>
+          <div class="skill-grid" id="missing-list"></div>
+        </div>
+
+        <!-- Job Gaps -->
+        <div style="margin-bottom:2.5rem" id="job-section">
+          <div class="section-label">🎯 Job Description Fit Breakdown</div>
+          <div id="job-gaps-list"></div>
+        </div>
+
+        <!-- GitHub Summary -->
+        <div class="card" style="margin-bottom:2rem" id="github-summary"></div>
+
+        <div style="text-align:center; margin-top:2rem; display:flex; gap:1rem; justify-content:center; flex-wrap:wrap">
+          <button class="btn btn-ghost" id="run-again-btn">← Analyze Another Resume</button>
+          <a href="/" class="btn btn-primary">Run Full Code Audit →</a>
+        </div>
+      </div>
+    </main>
+
+    <script src="/js/resume.js"></script>
+  </body>
+</html>

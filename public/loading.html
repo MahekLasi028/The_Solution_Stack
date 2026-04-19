@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevAudit — Analysing</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="logo" href="/">Dev<span>Audit</span></a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="/">Submit</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <nav class="breadcrumb" aria-label="Progress">
+        <a href="/">Submit</a><span class="sep">→</span>
+        <span class="here">Analysing</span><span class="sep">→</span>
+        <span>Report</span><span class="sep">→</span>
+        <span>Roadmap</span>
+      </nav>
+
+      <section class="loading-hero">
+        <h1>Analysing your public work</h1>
+        <p class="loading-note">
+          This takes about 30–60 seconds — we are reading every file you have written that we can access safely.
+        </p>
+      </section>
+
+      <div class="card">
+        <ul class="steps-list" id="steps" aria-live="polite"></ul>
+        <div class="stats-row" id="stats">
+          <span>Repos found: <strong id="repos">0</strong></span>
+          <span>Files scanned: <strong id="files">0</strong></span>
+        </div>
+        <div id="err" class="err-box hidden" role="alert"></div>
+      </div>
+    </main>
+
+    <script src="/js/loading.js"></script>
+  </body>
+</html>

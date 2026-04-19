@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevAudit — 90-Day Roadmap</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="logo" href="/">Dev<span>Audit</span></a>
+        <nav class="nav-links" aria-label="Primary">
+          <a href="/">Submit</a>
+          <a href="#" id="nav-report">Report</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <nav class="breadcrumb" aria-label="Progress">
+        <a href="/">Submit</a><span class="sep">→</span>
+        <a id="bc-loading" href="#">Analysing</a><span class="sep">→</span>
+        <a id="bc-report" href="#">Report</a><span class="sep">→</span>
+        <span class="here">Roadmap</span>
+      </nav>
+
+      <div id="readonly-banner" class="readonly-banner hidden">Shared roadmap — progress you tick is saved only in this browser.</div>
+
+      <div id="waiting" class="card">
+        <p>Loading your roadmap…</p>
+      </div>
+
+      <div id="roadmap-root" class="hidden">
+        <h1 style="margin-top: 0">Your 90-day learning plan</h1>
+        <p class="muted" style="color: var(--muted); max-width: 42rem">
+          Each task references why it matters and ties back to findings from your audit. Check items off as you go — your
+          progress stays in local storage on this device.
+        </p>
+
+        <div id="months"></div>
+
+        <div class="share-bar card">
+          <button type="button" class="btn btn-primary" id="share-btn" style="width: auto; min-width: 200px">
+            Share Your Roadmap
+          </button>
+          <span id="share-status" class="muted" style="color: var(--muted); font-size: 0.9rem"></span>
+        </div>
+      </div>
+
+      <div id="fatal" class="err-box hidden" role="alert"></div>
+    </main>
+
+    <script src="/js/roadmap.js"></script>
+  </body>
+</html>

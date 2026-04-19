@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevAudit — Your Report</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="logo" href="/">Dev<span>Audit</span></a>
+        <nav class="nav-links" aria-label="Report sections">
+          <a href="#scores">Scores</a>
+          <a href="#findings">Findings</a>
+          <a href="#career">Career Insights</a>
+          <a href="#jobs">Job Matches</a>
+          <a href="#resume">Resume</a>
+          <a href="#roadmap-link">Roadmap</a>
+          <a href="/interview.html" style="background:rgba(0,220,100,0.1);border:1px solid rgba(0,220,100,0.3);border-radius:8px;padding:0.3rem 0.85rem;font-size:0.88rem;color:var(--success)">🎤 Mock Interview</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <nav class="breadcrumb" aria-label="Progress">
+        <a href="/">Submit</a><span class="sep">→</span>
+        <a id="bc-loading" href="#">Analysing</a><span class="sep">→</span>
+        <span class="here">Report</span><span class="sep">→</span>
+        <a id="bc-roadmap" href="#">Roadmap</a>
+      </nav>
+
+      <div id="readonly-banner" class="readonly-banner hidden">You are viewing a shared, read-only report.</div>
+
+      <div id="waiting" class="card">
+        <p>Loading your report…</p>
+      </div>
+
+      <div id="report-root" class="hidden">
+        <section class="card report-header anchor-offset" id="top">
+          <img id="avatar" class="avatar" alt="GitHub avatar" src="" width="88" height="88" />
+          <div>
+            <h1 id="dev-name" style="margin: 0 0 0.35rem; font-size: 1.75rem">Developer</h1>
+            <p id="dev-bio" class="muted" style="margin: 0; color: var(--muted); font-size: 0.95rem"></p>
+            <div class="percentile" id="percentile-strip"></div>
+          </div>
+          <div>
+            <div id="level-badge" class="level-badge level-Mid">Mid</div>
+          </div>
+        </section>
+
+        <section class="anchor-offset" id="scores">
+          <h2 class="section-title">Scores</h2>
+          <p class="muted" style="color: var(--muted); margin-top: -0.5rem">
+            Numbers are paired with plain-English context so you know what they mean for hiring managers.
+          </p>
+          <div class="score-grid" id="score-cards"></div>
+        </section>
+
+        <section class="anchor-offset" id="findings">
+          <h2 class="section-title">Detailed findings</h2>
+          <p class="muted" style="color: var(--muted); margin-top: -0.5rem">
+            Each item answers: what happened, where it is, why it matters, and how to fix it.
+          </p>
+          <div id="findings-list"></div>
+        </section>
+
+        <section class="anchor-offset" id="career">
+          <h2 class="section-title">What This Means for Your Career</h2>
+          <div class="card" id="career-card"></div>
+        </section>
+
+        <section class="anchor-offset" id="jobs">
+          <h2 class="section-title">Job Match</h2>
+          <div id="jobs-list"></div>
+        </section>
+
+        <section class="anchor-offset" id="resume">
+          <h2 class="section-title">Resume</h2>
+          <div class="card" id="resume-card"></div>
+        </section>
+
+        <section class="anchor-offset" id="roadmap-link">
+          <h2 class="section-title">Roadmap</h2>
+          <p class="muted" style="color: var(--muted)">
+            Your personalised 90-day plan is on the next page, with tasks tied to findings from this audit.
+          </p>
+          <a id="roadmap-btn" class="btn btn-primary" href="#" style="max-width: 320px; display: inline-flex">Open my 90-day roadmap</a>
+        </section>
+      </div>
+
+      <div id="fatal" class="err-box hidden" role="alert"></div>
+    </main>
+
+    <script src="/js/report.js"></script>
+  </body>
+</html>

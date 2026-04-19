@@ -1,0 +1,26 @@
+{
+  "name": "devaudit",
+  "version": "1.0.0",
+  "description": "Developer Career Intelligence Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.15.0",
+    "chrome-launcher": "^1.2.1",
+    "cors": "^2.8.6",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "lighthouse": "^12.8.2",
+    "mongoose": "^8.23.0",
+    "openai": "^4.104.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
